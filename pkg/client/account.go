@@ -103,7 +103,15 @@ func (dc *DeputyClient) GetResource(system string, id int, deputyApiResponse Dep
 	return nil
 }
 
+type DeputyQueryResourceSortDirection string
+
+const (
+	SortAscending  DeputyQueryResourceSortDirection = "asc"
+	SortDescending                                  = "desc"
+)
+
 type DeputyQueryResourceSearchOptions map[DeputyQueryResourceSearchElementName]DeputyQueryResourceSearchElement
+type DeputyQueryResourceSortOptions map[DeputyQueryResourceFieldName]DeputyQueryResourceSortDirection
 type DeputyQueryResourceSearchElementName string
 type DeputyQueryResourceFieldName string
 type DeputyQueryResourceSearchElement struct {
@@ -116,11 +124,13 @@ type DeputyQueryResourceOptions struct {
 	Search DeputyQueryResourceSearchOptions `json:"search,omitempty"`
 	Start  int                              `json:"start,omitempty"`
 	Max    int                              `json:"max,omitempty"`
+	Sort   DeputyQueryResourceSortOptions   `json:"sort,omitempty"`
 }
 
 func NewDeputyQueryResourceOptions() *DeputyQueryResourceOptions {
 	return &DeputyQueryResourceOptions{
 		Search: DeputyQueryResourceSearchOptions{},
+		Sort:   DeputyQueryResourceSortOptions{},
 		Start:  0,
 		Max:    500,
 	}
@@ -133,6 +143,10 @@ func (q *DeputyQueryResourceOptions) AddSearch(name DeputyQueryResourceSearchEle
 		Data:  data,
 		Join:  join,
 	}
+}
+
+func (q *DeputyQueryResourceOptions) AddSort(field DeputyQueryResourceFieldName, direction DeputyQueryResourceSortDirection) {
+	q.Sort[field] = direction
 }
 
 func (dc *DeputyClient) QueryResource(system string, options *DeputyQueryResourceOptions, deputyApiResponse DeputyAPIResponse) error {

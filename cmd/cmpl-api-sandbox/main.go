@@ -21,21 +21,26 @@ func main() {
 	var me = deputy.DeputyMeResponse{}
 	if err := dc.Me(&me); err != nil {
 		fmt.Println(err)
+		return
 	}
 
 	// Find timesheets for current user
 	queryOptions := deputy.NewDeputyQueryResourceOptions()
+
 	queryOptions.AddSearch("employee", "Employee", "eq", me.EmployeeId, "")
 	queryOptions.AddSearch("dateFrom", "Date", "ge", "2020-04-01T00:00:00+10:00", "")
 	queryOptions.AddSearch("dateTo", "Date", "le", "2020-04-30T00:00:00+10:00", "")
+	queryOptions.AddSort("Date", deputy.SortAscending)
 
 	var timesheets []deputy.DeputyTimesheet
-
 	if err := dc.QueryResource("Timesheet", queryOptions, &timesheets); err != nil {
 		fmt.Println(err)
-	} else {
-		for _, ts := range timesheets {
-			fmt.Printf("id:%d emp:%d date:%s\n", ts.Id, ts.Employee, ts.Date)
-		}
+		return
+	}
+
+	// Print the results
+	fmt.Printf("Timesheets for employee %d (%s)\n", me.EmployeeId, me.Name)
+	for _, ts := range timesheets {
+		fmt.Printf("id: %d emp: %d date: %s\n", ts.Id, ts.Employee, ts.Date)
 	}
 }
