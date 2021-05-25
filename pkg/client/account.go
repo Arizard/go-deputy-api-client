@@ -1,6 +1,7 @@
 package client
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -39,7 +40,7 @@ func (dc *DeputyClient) GetAPIUrl() string {
 func (dc *DeputyClient) DoAuthorisedRequest(method string, url string, body io.Reader, deputyApiResponse DeputyAPIResponse) (err error) {
 	client := dc.Client
 
-	req, err := http.NewRequest(method, url, nil)
+	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return err
 	}
@@ -62,6 +63,94 @@ func (dc *DeputyClient) DoAuthorisedRequest(method string, url string, body io.R
 	}
 
 	if err := json.Unmarshal(responseBody, deputyApiResponse); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (dc *DeputyClient) Me(deputyApiResponse DeputyAPIResponse) error {
+	url := fmt.Sprintf("%s/me", dc.GetAPIUrl())
+	method := "GET"
+
+	err := dc.DoAuthorisedRequest(
+		method,
+		url,
+		nil,
+		deputyApiResponse,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (dc *DeputyClient) GetResource(system string, id int, deputyApiResponse DeputyAPIResponse) error {
+	url := fmt.Sprintf("%s/resource/%s/%d", dc.GetAPIUrl(), system, id)
+	method := "GET"
+
+	err := dc.DoAuthorisedRequest(
+		method,
+		url,
+		nil,
+		deputyApiResponse,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+type DeputyQueryResourceSearchOptions map[DeputyQueryResourceSearchElementName]DeputyQueryResourceSearchElement
+type DeputyQueryResourceSearchElementName string
+type DeputyQueryResourceFieldName string
+type DeputyQueryResourceSearchElement struct {
+	Field DeputyQueryResourceFieldName `json:"field,omitempty"`
+	Type  string                       `json:"type,omitempty"`
+	Data  interface{}                  `json:"data,omitempty"`
+	Join  string                       `json:"join,omitempty"`
+}
+type DeputyQueryResourceOptions struct {
+	Search DeputyQueryResourceSearchOptions `json:"search,omitempty"`
+	Start  int                              `json:"start,omitempty"`
+	Max    int                              `json:"max,omitempty"`
+}
+
+func NewDeputyQueryResourceOptions() *DeputyQueryResourceOptions {
+	return &DeputyQueryResourceOptions{
+		Search: DeputyQueryResourceSearchOptions{},
+		Start:  0,
+		Max:    500,
+	}
+}
+
+func (q *DeputyQueryResourceOptions) AddSearch(name DeputyQueryResourceSearchElementName, field DeputyQueryResourceFieldName, t string, data interface{}, join string) {
+	q.Search[name] = DeputyQueryResourceSearchElement{
+		Field: field,
+		Type:  t,
+		Data:  data,
+		Join:  join,
+	}
+}
+
+func (dc *DeputyClient) QueryResource(system string, options *DeputyQueryResourceOptions, deputyApiResponse DeputyAPIResponse) error {
+	url := fmt.Sprintf("%s/resource/%s/QUERY", dc.GetAPIUrl(), system)
+	method := "POST"
+
+	optionsPayload, err := json.Marshal(options)
+	if err != nil {
+		return err
+	}
+
+	err = dc.DoAuthorisedRequest(
+		method,
+		url,
+		bytes.NewReader(optionsPayload),
+		deputyApiResponse,
+	)
+	if err != nil {
 		return err
 	}
 
