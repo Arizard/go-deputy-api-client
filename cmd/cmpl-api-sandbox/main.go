@@ -18,7 +18,7 @@ func main() {
 	)
 
 	// Get current user
-	me := deputy.DeputyMeResponse{}
+	var me = deputy.DeputyMeResponse{}
 	if err := dc.Me(&me); err != nil {
 		fmt.Println(err)
 	}
