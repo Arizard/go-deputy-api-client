@@ -12,8 +12,8 @@ const (
 )
 
 func main() {
-	// Create a new Deputy API Client
-	dc := deputy.NewClient(
+	// Create a new Deputy API V1Client
+	var dc deputy.Client = deputy.NewV1Client(
 		subdomain,
 		deputy.NewBearerTokenRequestAuthoriser(bearer),
 	)
@@ -29,8 +29,8 @@ func main() {
 	queryOptions := deputy.NewDeputyQueryResourceOptions()
 
 	queryOptions.AddSearch("employeeIsMe", "Employee", "eq", me.EmployeeId, "")
-	queryOptions.AddSearch("dateFrom", "Date", "ge", "2020-04-01T00:00:00+10:00", "")
-	queryOptions.AddSearch("dateTo", "Date", "le", "2020-04-30T00:00:00+10:00", "")
+	// queryOptions.AddSearch("dateFrom", "Date", "ge", "2020-04-01T00:00:00+10:00", "")
+	// queryOptions.AddSearch("dateTo", "Date", "le", "2020-04-30T00:00:00+10:00", "")
 	queryOptions.AddSort("Date", deputy.SortAscending)
 
 	var timesheets []deputy.Timesheet
@@ -39,9 +39,14 @@ func main() {
 		return
 	}
 
+	timesheets2, _ := deputy.GetAllTimesheetsForEmployee(dc, me.EmployeeId)
+
 	// Print the results
 	fmt.Printf("Timesheets for employee %d (%s)\n", me.EmployeeId, me.Name)
 	for _, ts := range timesheets {
 		fmt.Printf("id: %d emp: %d date: %s\n", ts.Id, ts.Employee, ts.Date)
 	}
+
+	fmt.Printf("length1: %d\n", len(timesheets))
+	fmt.Printf("length2: %d\n", len(timesheets2))
 }
