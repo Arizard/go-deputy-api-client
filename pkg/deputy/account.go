@@ -1,4 +1,4 @@
-package client
+package deputy
 
 import (
 	"bytes"
@@ -26,7 +26,7 @@ type DeputyClient struct {
 	Client    *http.Client
 }
 
-func NewDeputyClient(subdomain string, authorise RequestAuthoriser) *DeputyClient {
+func NewClient(subdomain string, authorise RequestAuthoriser) *DeputyClient {
 	if subdomain == "" {
 		panic("subdomain cannot be empty")
 	}
@@ -37,7 +37,7 @@ func (dc *DeputyClient) GetAPIUrl() string {
 	return fmt.Sprintf("https://%s.deputy.com/api/v1", dc.Subdomain)
 }
 
-func (dc *DeputyClient) DoAuthorisedRequest(method string, url string, body io.Reader, deputyApiResponse DeputyAPIResponse) (err error) {
+func (dc *DeputyClient) DoAuthorisedRequest(method string, url string, body io.Reader, deputyApiResponse APIResponse) (err error) {
 	client := dc.Client
 
 	req, err := http.NewRequest(method, url, body)
@@ -69,7 +69,7 @@ func (dc *DeputyClient) DoAuthorisedRequest(method string, url string, body io.R
 	return nil
 }
 
-func (dc *DeputyClient) Me(deputyApiResponse DeputyAPIResponse) error {
+func (dc *DeputyClient) Me(deputyApiResponse APIResponse) error {
 	url := fmt.Sprintf("%s/me", dc.GetAPIUrl())
 	method := "GET"
 
@@ -86,7 +86,7 @@ func (dc *DeputyClient) Me(deputyApiResponse DeputyAPIResponse) error {
 	return nil
 }
 
-func (dc *DeputyClient) GetResource(system string, id int, deputyApiResponse DeputyAPIResponse) error {
+func (dc *DeputyClient) GetResource(system string, id int, deputyApiResponse APIResponse) error {
 	url := fmt.Sprintf("%s/resource/%s/%d", dc.GetAPIUrl(), system, id)
 	method := "GET"
 
@@ -136,8 +136,8 @@ func NewDeputyQueryResourceOptions() *DeputyQueryResourceOptions {
 	}
 }
 
-func (q *DeputyQueryResourceOptions) AddSearch(name DeputyQueryResourceSearchElementName, field DeputyQueryResourceFieldName, t string, data interface{}, join string) {
-	q.Search[name] = DeputyQueryResourceSearchElement{
+func (q *DeputyQueryResourceOptions) AddSearch(label DeputyQueryResourceSearchElementName, field DeputyQueryResourceFieldName, t string, data interface{}, join string) {
+	q.Search[label] = DeputyQueryResourceSearchElement{
 		Field: field,
 		Type:  t,
 		Data:  data,
@@ -149,7 +149,7 @@ func (q *DeputyQueryResourceOptions) AddSort(field DeputyQueryResourceFieldName,
 	q.Sort[field] = direction
 }
 
-func (dc *DeputyClient) QueryResource(system string, options *DeputyQueryResourceOptions, deputyApiResponse DeputyAPIResponse) error {
+func (dc *DeputyClient) QueryResource(system string, options *DeputyQueryResourceOptions, deputyApiResponse APIResponse) error {
 	url := fmt.Sprintf("%s/resource/%s/QUERY", dc.GetAPIUrl(), system)
 	method := "POST"
 

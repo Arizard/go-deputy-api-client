@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	deputy "github.com/arizard/go-deputy-api-client/pkg/client"
+	"github.com/arizard/go-deputy-api-client/pkg/deputy"
 )
 
 const (
@@ -12,13 +12,14 @@ const (
 )
 
 func main() {
-	dc := deputy.NewDeputyClient(
+	// Create a new Deputy API Client
+	dc := deputy.NewClient(
 		subdomain,
 		deputy.NewBearerTokenRequestAuthoriser(bearer),
 	)
 
 	// Get current user
-	var me = deputy.DeputyMeResponse{}
+	var me = deputy.MeResponse{}
 	if err := dc.Me(&me); err != nil {
 		fmt.Println(err)
 		return
@@ -27,12 +28,12 @@ func main() {
 	// Find timesheets for current user
 	queryOptions := deputy.NewDeputyQueryResourceOptions()
 
-	queryOptions.AddSearch("employee", "Employee", "eq", me.EmployeeId, "")
+	queryOptions.AddSearch("employeeIsMe", "Employee", "eq", me.EmployeeId, "")
 	queryOptions.AddSearch("dateFrom", "Date", "ge", "2020-04-01T00:00:00+10:00", "")
 	queryOptions.AddSearch("dateTo", "Date", "le", "2020-04-30T00:00:00+10:00", "")
 	queryOptions.AddSort("Date", deputy.SortAscending)
 
-	var timesheets []deputy.DeputyTimesheet
+	var timesheets []deputy.TimesheetResponse
 	if err := dc.QueryResource("Timesheet", queryOptions, &timesheets); err != nil {
 		fmt.Println(err)
 		return
