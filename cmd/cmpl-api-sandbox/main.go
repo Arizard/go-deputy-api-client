@@ -33,7 +33,7 @@ func main() {
 	queryOptions.AddSearch("dateTo", "Date", "le", "2020-04-30T00:00:00+10:00", "")
 	queryOptions.AddSort("Date", deputy.SortAscending)
 
-	var timesheets []deputy.TimesheetResponse
+	var timesheets []deputy.Timesheet
 	if err := dc.QueryResource("Timesheet", queryOptions, &timesheets); err != nil {
 		fmt.Println(err)
 		return

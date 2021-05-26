@@ -15,7 +15,7 @@ type MeResponse struct {
 	PrimaryEmail string
 }
 
-type TimesheetResponse struct {
+type Timesheet struct {
 	Id                  int
 	Employee            int
 	EmployeeHistory     int
