@@ -1,7 +1,7 @@
 package deputy
 
 func GetAllTimesheetsForEmployee(dc Client, employeeId int) (timesheets []Timesheet, err error) {
-	queryOptions := NewDeputyQueryResourceOptions()
+	queryOptions := NewQueryResourceOptions()
 	queryOptions.AddSearch("employeeIsId", "Employee", "eq", employeeId, "")
 	queryOptions.Max = 500
 

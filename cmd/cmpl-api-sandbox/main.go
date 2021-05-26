@@ -26,7 +26,7 @@ func main() {
 	}
 
 	// Find timesheets for current user
-	queryOptions := deputy.NewDeputyQueryResourceOptions()
+	queryOptions := deputy.NewQueryResourceOptions()
 
 	queryOptions.AddSearch("employeeIsMe", "Employee", "eq", me.EmployeeId, "")
 	// queryOptions.AddSearch("dateFrom", "Date", "ge", "2020-04-01T00:00:00+10:00", "")

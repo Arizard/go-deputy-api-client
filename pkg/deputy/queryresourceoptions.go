@@ -1,40 +1,40 @@
 package deputy
 
-type DeputyQueryResourceSortDirection string
+type QueryResourceSortDirection string
 
 const (
-	SortAscending  DeputyQueryResourceSortDirection = "asc"
-	SortDescending                                  = "desc"
+	SortAscending  QueryResourceSortDirection = "asc"
+	SortDescending                            = "desc"
 )
 
-type DeputyQueryResourceSearchOptions map[DeputyQueryResourceSearchElementName]DeputyQueryResourceSearchElement
-type DeputyQueryResourceSortOptions map[DeputyQueryResourceFieldName]DeputyQueryResourceSortDirection
-type DeputyQueryResourceSearchElementName string
-type DeputyQueryResourceFieldName string
-type DeputyQueryResourceSearchElement struct {
-	Field DeputyQueryResourceFieldName `json:"field,omitempty"`
-	Type  string                       `json:"type,omitempty"`
-	Data  interface{}                  `json:"data,omitempty"`
-	Join  string                       `json:"join,omitempty"`
+type QueryResourceSearchOptions map[QueryResourceSearchElementName]QueryResourceSearchElement
+type QueryResourceSortOptions map[QueryResourceFieldName]QueryResourceSortDirection
+type QueryResourceSearchElementName string
+type QueryResourceFieldName string
+type QueryResourceSearchElement struct {
+	Field QueryResourceFieldName `json:"field,omitempty"`
+	Type  string                 `json:"type,omitempty"`
+	Data  interface{}            `json:"data,omitempty"`
+	Join  string                 `json:"join,omitempty"`
 }
-type DeputyQueryResourceOptions struct {
-	Search DeputyQueryResourceSearchOptions `json:"search,omitempty"`
-	Start  int                              `json:"start,omitempty"`
-	Max    int                              `json:"max,omitempty"`
-	Sort   DeputyQueryResourceSortOptions   `json:"sort,omitempty"`
+type QueryResourceOptions struct {
+	Search QueryResourceSearchOptions `json:"search,omitempty"`
+	Start  int                        `json:"start,omitempty"`
+	Max    int                        `json:"max,omitempty"`
+	Sort   QueryResourceSortOptions   `json:"sort,omitempty"`
 }
 
-func NewDeputyQueryResourceOptions() *DeputyQueryResourceOptions {
-	return &DeputyQueryResourceOptions{
-		Search: DeputyQueryResourceSearchOptions{},
-		Sort:   DeputyQueryResourceSortOptions{},
+func NewQueryResourceOptions() *QueryResourceOptions {
+	return &QueryResourceOptions{
+		Search: QueryResourceSearchOptions{},
+		Sort:   QueryResourceSortOptions{},
 		Start:  0,
 		Max:    500,
 	}
 }
 
-func (q *DeputyQueryResourceOptions) AddSearch(label DeputyQueryResourceSearchElementName, field DeputyQueryResourceFieldName, t string, data interface{}, join string) {
-	q.Search[label] = DeputyQueryResourceSearchElement{
+func (q *QueryResourceOptions) AddSearch(label QueryResourceSearchElementName, field QueryResourceFieldName, t string, data interface{}, join string) {
+	q.Search[label] = QueryResourceSearchElement{
 		Field: field,
 		Type:  t,
 		Data:  data,
@@ -42,6 +42,6 @@ func (q *DeputyQueryResourceOptions) AddSearch(label DeputyQueryResourceSearchEl
 	}
 }
 
-func (q *DeputyQueryResourceOptions) AddSort(field DeputyQueryResourceFieldName, direction DeputyQueryResourceSortDirection) {
+func (q *QueryResourceOptions) AddSort(field QueryResourceFieldName, direction QueryResourceSortDirection) {
 	q.Sort[field] = direction
 }

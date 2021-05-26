@@ -93,7 +93,7 @@ func (dc *V1Client) GetResource(system string, id int, deputyApiResponse APIResp
 	return nil
 }
 
-func (dc *V1Client) QueryResource(system string, options *DeputyQueryResourceOptions, deputyApiResponse APIResponse) error {
+func (dc *V1Client) QueryResource(system string, options *QueryResourceOptions, deputyApiResponse APIResponse) error {
 	url := fmt.Sprintf("%s/resource/%s/QUERY", dc.GetAPIUrl(), system)
 	method := "POST"
 
