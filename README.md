@@ -17,7 +17,7 @@ import (
 
 const (
 	subdomain = "brycesflorist.au"
-	bearer = "5f9e9b70122f6e6fda282977ab6c9a1d"
+	bearer = "5f9e...a1dG"
 	timesheetId = 37968
 )
 
