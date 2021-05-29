@@ -1,9 +1,9 @@
 package codeupdate
 
 type ScriptOptions struct {
-	DecafBase64 []byte `json:"strDecaf,omitempty"`
-	DeXMLBase64 []byte `json:"strDexml,omitempty"`
-	Label       string `json:"label,omitempty"`
+	DecafBase64 string `json:"strDecaf,omitempty"`
+	DeXMLBase64 string `json:"strDexml,omitempty"`
+	Label       string `json:"strLabel,omitempty"`
 	ScriptType  uint   `json:"intScriptType"`
 	TriggerORM  uint   `json:"strTriggerOrm,omitempty"`
 }
@@ -14,21 +14,21 @@ type ReportOptions struct {
 	DateFilter       uint   `json:"intDateFilter"`
 	CompanyFilter    uint   `json:"blnCompanyFilter"`
 	Category         uint   `json:"intCategory"`
-	HTMLBase64       []byte `json:"strBody"`
-	JavascriptBase64 []byte `json:"strJsCode"`
-	DecafBase64      []byte `json:"strDecaf,omitempty"`
-	DeXMLBase64      []byte `json:"strDexml,omitempty"`
-	CSSBase64        []byte `json:"strCss"`
-	WidgetDexml      []byte `json:"strWidgetDexml,omitempty"`
+	HTMLBase64       string `json:"strBody"`
+	JavascriptBase64 string `json:"strJsCode"`
+	DecafBase64      string `json:"strDecaf,omitempty"`
+	DeXMLBase64      string `json:"strDexml,omitempty"`
+	CSSBase64        string `json:"strCss"`
+	WidgetDexml      string `json:"strWidgetDexml,omitempty"`
 }
 
 type CustomAppOptions struct {
 	Name             string `json:"strName"`
-	HTMLBase64       []byte `json:"strBody"`
-	JavascriptBase64 []byte `json:"strJsCode"`
-	DecafBase64      []byte `json:"strDecaf,omitempty"`
-	DeXMLBase64      []byte `json:"strDexml,omitempty"`
-	CSSBase64        []byte `json:"strCss"`
+	HTMLBase64       string `json:"strBody"`
+	JavascriptBase64 string `json:"strJsCode"`
+	DecafBase64      string `json:"strDecaf,omitempty"`
+	DeXMLBase64      string `json:"strDexml,omitempty"`
+	CSSBase64        string `json:"strCss"`
 }
 
 const (
