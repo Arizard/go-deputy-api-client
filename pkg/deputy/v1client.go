@@ -8,6 +8,8 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/arizard/go-deputy-api-client/pkg/deputy/codeupdate"
 )
 
 type V1Client struct {
@@ -130,4 +132,32 @@ func (dc *V1Client) ExecDeXML(scriptId string, params interface{}, deputyAPIResp
 	}
 
 	return nil
+}
+
+func codeUpdate(dc *V1Client, mode string, id string, options interface{}, deputyAPIResponse APIResponse) error {
+	var body io.Reader
+	url := fmt.Sprintf("%s/codeupdate/%s/%s", dc.GetAPIUrl(), mode, id)
+
+	optionsPayload, err := json.Marshal(options)
+	if err != nil {
+		return err
+	}
+	body = bytes.NewReader(optionsPayload)
+
+	return dc.DoAuthorisedRequest("POST", url, body, deputyAPIResponse)
+}
+
+func (dc *V1Client) CodeUpdateScript(id string, options codeupdate.ScriptOptions, deputyAPIResponse APIResponse) error {
+	fmt.Println("WARNING: CodeUpdateScript not tested!")
+	return codeUpdate(dc, "dexml", id, options, deputyAPIResponse)
+}
+
+func (dc *V1Client) CodeUpdateReport(id string, options codeupdate.ReportOptions, deputyAPIResponse APIResponse) error {
+	fmt.Println("WARNING: CodeUpdateReport not tested!")
+	return codeUpdate(dc, "dexml", id, options, deputyAPIResponse)
+}
+
+func (dc *V1Client) CodeUpdateCustomApp(id string, options codeupdate.CustomAppOptions, deputyAPIResponse APIResponse) error {
+	fmt.Println("WARNING: CodeUpdateCustomApp not tested!")
+	return codeUpdate(dc, "dexml", id, options, deputyAPIResponse)
 }
