@@ -1,12 +1,3 @@
-# Deputy API Client
-
-## Description
-
-A Deputy API client package written in Go. Use this to make API calls to Deputy accounts over HTTPS.
-
-## Example Usage
-
-```go
 package main
 
 import (
@@ -56,4 +47,3 @@ func main() {
 		fmt.Printf("id: %d emp: %d date: %s\n", ts.Id, ts.Employee, ts.Date)
 	}
 }
-```
