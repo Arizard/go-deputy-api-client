@@ -151,7 +151,6 @@ func codeUpdate(dc *V1Client, mode string, id string, options interface{}, deput
 }
 
 func (dc *V1Client) CodeUpdateScript(id string, options codeupdate.ScriptOptions, deputyAPIResponse APIResponse) error {
-	fmt.Println("WARNING: CodeUpdateScript not tested!")
 	return codeUpdate(dc, "dexml", id, options, deputyAPIResponse)
 }
 
