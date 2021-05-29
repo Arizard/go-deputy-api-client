@@ -35,17 +35,26 @@ func main() {
 
 	decafBase64 := base64.StdEncoding.EncodeToString(coffee)
 
-	scriptId := "arie_test_codeupdate2"
+	scriptId := "arie_test_codeupdate"
 	codeupdateOptions := codeupdate.ScriptOptions{
 		DecafBase64: decafBase64,
-		Label:       "Arie Test Codeupdate2 Go Client",
-		ScriptType:  codeupdate.ApplicationLaunch,
-		TriggerORM:  codeupdate.TriggerShiftTemplate,
+		Label:       "Arie Test Codeupdate Go Client",
+		ScriptType:  codeupdate.ExecuteViaApi,
 	}
 	var codeWasUpdated = false
 	if err := dc.CodeUpdateScript(scriptId, codeupdateOptions, &codeWasUpdated); err != nil {
 		fmt.Println(err)
 	}
 
+	var scriptResponse struct {
+		Message   string
+		Timestamp uint64
+	}
+
+	if err := dc.ExecDeXML(scriptId, []byte{}, &scriptResponse); err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Printf("%+v\n", scriptResponse)
 	fmt.Printf("codeWasUpdated: %t\n", codeWasUpdated)
 }
