@@ -44,7 +44,7 @@ func (dc *V1Client) DoAuthorisedRequest(method string, url string, body io.Reade
 	defer res.Body.Close()
 
 	if res.StatusCode < 200 || res.StatusCode > 299 {
-		return errors.New(fmt.Sprint("request returned non 2xx status code:", res.Status))
+		return errors.New(fmt.Sprint("request returned non 2xx status code: ", res.Status))
 	}
 
 	responseBody, err := ioutil.ReadAll(res.Body)
@@ -109,6 +109,23 @@ func (dc *V1Client) QueryResource(system string, options *QueryResourceOptions, 
 		deputyApiResponse,
 	)
 	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (dc *V1Client) ExecDeXML(scriptId string, params interface{}, deputyAPIResponse APIResponse) error {
+	var body io.Reader
+
+	payload, err := json.Marshal(params)
+	if err != nil {
+		return err
+	}
+
+	body = bytes.NewReader(payload)
+
+	if err := dc.DoAuthorisedRequest("POST", fmt.Sprintf("%s/execdexml/%s", dc.GetAPIUrl(), scriptId), body, deputyAPIResponse); err != nil {
 		return err
 	}
 

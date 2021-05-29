@@ -49,4 +49,14 @@ func main() {
 
 	fmt.Printf("length1: %d\n", len(timesheets))
 	fmt.Printf("length2: %d\n", len(timesheets2))
+
+	var scriptResponse map[string]interface{}
+
+	err := dc.ExecDeXML("plygrnd_4mdHQcCJaXK8rAisNHMYs8", []byte{}, &scriptResponse)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Printf("%+v\n", scriptResponse)
 }

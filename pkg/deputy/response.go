@@ -1,7 +1,5 @@
 package deputy
 
-type APIResponse interface{}
-
 type MeResponse struct {
 	Name         string
 	FirstName    string
