@@ -144,7 +144,10 @@ func codeUpdate(dc *V1Client, mode string, id string, options interface{}, deput
 	}
 	body = bytes.NewReader(optionsPayload)
 
-	return dc.DoAuthorisedRequest("POST", url, body, deputyAPIResponse)
+	if err := dc.DoAuthorisedRequest("POST", url, body, deputyAPIResponse); err != nil && err.Error() != "unexpected end of JSON input" {
+		return err
+	}
+	return nil
 }
 
 func (dc *V1Client) CodeUpdateScript(id string, options codeupdate.ScriptOptions, deputyAPIResponse APIResponse) error {
