@@ -1,62 +1,60 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
+	"io/ioutil"
+	"os"
 
 	"github.com/arizard/go-deputy-api-client/pkg/deputy"
+	"github.com/arizard/go-deputy-api-client/pkg/deputy/codeupdate"
 )
 
-const (
-	subdomain = "brycesflorist.au"
-	bearer    = "5f9e9b70122f6e6fda282977ab6c9a1d"
-)
+var subdomain string
+var bearer string
+var coffeePath string
 
 func main() {
+	subdomain = os.Getenv("EXAMPLE_SUBDOMAIN")
+	bearer = os.Getenv("EXAMPLE_BEARER")
+	coffeePath = os.Getenv("EXAMPLE_DECAF")
+
 	// Create a new Deputy API V1Client
 	var dc deputy.Client = deputy.NewV1Client(
 		subdomain,
 		deputy.NewBearerTokenRequestAuthoriser(bearer),
 	)
 
-	// Get current user
-	var me = deputy.MeResponse{}
-	if err := dc.Me(&me); err != nil {
+	var coffee []byte
+	if out, err := ioutil.ReadFile(coffeePath); err != nil {
 		fmt.Println(err)
 		return
+	} else {
+		coffee = out
 	}
 
-	// Find timesheets for current user
-	queryOptions := deputy.NewQueryResourceOptions()
+	decafBase64 := base64.StdEncoding.EncodeToString(coffee)
 
-	queryOptions.AddSearch("employeeIsMe", "Employee", "eq", me.EmployeeId, "")
-	// queryOptions.AddSearch("dateFrom", "Date", "ge", "2020-04-01T00:00:00+10:00", "")
-	// queryOptions.AddSearch("dateTo", "Date", "le", "2020-04-30T00:00:00+10:00", "")
-	queryOptions.AddSort("Date", deputy.SortAscending)
-
-	var timesheets []deputy.Timesheet
-	if err := dc.QueryResource("Timesheet", queryOptions, &timesheets); err != nil {
+	scriptId := "arie_test_codeupdate"
+	codeupdateOptions := codeupdate.ScriptOptions{
+		DecafBase64: decafBase64,
+		Label:       "Arie Test Codeupdate Go Client",
+		ScriptType:  codeupdate.ExecuteViaApi,
+	}
+	var codeWasUpdated = false
+	if err := dc.CodeUpdateScript(scriptId, codeupdateOptions, &codeWasUpdated); err != nil {
 		fmt.Println(err)
-		return
 	}
 
-	timesheets2, _ := deputy.GetAllTimesheetsForEmployee(dc, me.EmployeeId)
-
-	// Print the results
-	fmt.Printf("Timesheets for employee %d (%s)\n", me.EmployeeId, me.Name)
-	for _, ts := range timesheets {
-		fmt.Printf("id: %d emp: %d date: %s\n", ts.Id, ts.Employee, ts.Date)
+	var scriptResponse struct {
+		Message   string
+		Timestamp uint64
 	}
 
-	fmt.Printf("length1: %d\n", len(timesheets))
-	fmt.Printf("length2: %d\n", len(timesheets2))
-
-	var scriptResponse map[string]interface{}
-
-	err := dc.ExecDeXML("plygrnd_4mdHQcCJaXK8rAisNHMYs8", []byte{}, &scriptResponse)
-
-	if err != nil {
+	if err := dc.ExecDeXML(scriptId, []byte{}, &scriptResponse); err != nil {
 		fmt.Println(err)
 	}
 
 	fmt.Printf("%+v\n", scriptResponse)
+	fmt.Printf("codeWasUpdated: %t\n", codeWasUpdated)
 }
