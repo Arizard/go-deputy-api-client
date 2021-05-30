@@ -24,10 +24,12 @@ func readAndEncode(path string) string {
 
 var subdomain string
 var bearer string
+var coffeePath string
 
 func main() {
 	subdomain = os.Getenv("EXAMPLE_SUBDOMAIN")
 	bearer = os.Getenv("EXAMPLE_BEARER")
+	coffeePath = os.Getenv("EXAMPLE_DECAF")
 
 	// Create a new Deputy API V1Client
 	var dc deputy.Client = deputy.NewV1Client(
@@ -35,16 +37,20 @@ func main() {
 		deputy.NewBearerTokenRequestAuthoriser(bearer),
 	)
 
-	appId := "arie_test_codeupdate2"
-	codeupdateOptions := codeupdate.CustomAppOptions{
-		Name:             "Arie Test Codeupdate Application",
+	reportId := "arie_test_codeupdate2"
+	codeupdateOptions := codeupdate.ReportOptions{
+		Name:             "Arie Test Codeupdate Report",
+		IsDev:            codeupdate.False,
+		DateFilter:       codeupdate.DateRangePicker,
+		CompanyFilter:    codeupdate.True,
+		Category:         codeupdate.ReportCategoryMiscellaneous,
 		HTMLBase64:       readAndEncode(os.Getenv("EXAMPLE_REPORT_HTML")),
 		JavascriptBase64: readAndEncode(os.Getenv("EXAMPLE_REPORT_JS")),
 		DecafBase64:      readAndEncode(os.Getenv("EXAMPLE_REPORT_DECAF")),
 		CSSBase64:        readAndEncode(os.Getenv("EXAMPLE_REPORT_CSS")),
 	}
 	var codeWasUpdated = false
-	if err := dc.CodeUpdateCustomApp(appId, codeupdateOptions, &codeWasUpdated); err != nil {
+	if err := dc.CodeUpdateReport(reportId, codeupdateOptions, &codeWasUpdated); err != nil {
 		fmt.Println(err)
 	}
 

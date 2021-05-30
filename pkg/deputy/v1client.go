@@ -155,11 +155,9 @@ func (dc *V1Client) CodeUpdateScript(id string, options codeupdate.ScriptOptions
 }
 
 func (dc *V1Client) CodeUpdateReport(id string, options codeupdate.ReportOptions, deputyAPIResponse APIResponse) error {
-	fmt.Println("WARNING: CodeUpdateReport not tested!")
-	return codeUpdate(dc, "dexml", id, options, deputyAPIResponse)
+	return codeUpdate(dc, "report", id, options, deputyAPIResponse)
 }
 
 func (dc *V1Client) CodeUpdateCustomApp(id string, options codeupdate.CustomAppOptions, deputyAPIResponse APIResponse) error {
-	fmt.Println("WARNING: CodeUpdateCustomApp not tested!")
-	return codeUpdate(dc, "dexml", id, options, deputyAPIResponse)
+	return codeUpdate(dc, "application", id, options, deputyAPIResponse)
 }
