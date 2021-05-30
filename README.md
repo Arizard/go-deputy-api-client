@@ -2,7 +2,7 @@
 
 ## Description
 
-A Deputy API client package written in Go. Use this to make API calls to Deputy accounts.
+A Deputy API client package written in Go. Use this to make API calls to Deputy accounts. This is very much unfinished!
 
 ## Installation
 
