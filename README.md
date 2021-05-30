@@ -12,6 +12,14 @@ You can simply run the following in your shell:
 go get github.com/Arizard/go-deputy-api-client
 ```
 
+Then, in your projects, you need to import the `deputy` package:
+
+```
+import "github.com/Arizard/go-deputy-api-client/pkg/deputy"
+```
+
+
+
 ## Getting Started
 
 ### Make a Client
