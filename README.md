@@ -14,7 +14,7 @@ go get github.com/Arizard/go-deputy-api-client
 
 Then, in your projects, you need to import the `deputy` package:
 
-```
+```go
 import "github.com/Arizard/go-deputy-api-client/pkg/deputy"
 ```
 
