@@ -1,26 +1,12 @@
 package main
 
 import (
-	"encoding/base64"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/arizard/go-deputy-api-client/pkg/deputy"
-	"github.com/arizard/go-deputy-api-client/pkg/deputy/codeupdate"
+	"github.com/arizard/go-deputy-api-client/pkg/deputy/overtime"
 )
-
-func readAndEncode(path string) string {
-	var contents []byte
-	if out, err := ioutil.ReadFile(path); err != nil {
-		fmt.Println(err)
-		return ""
-	} else {
-		contents = out
-	}
-
-	return base64.StdEncoding.EncodeToString(contents)
-}
 
 var subdomain string
 var bearer string
@@ -35,18 +21,26 @@ func main() {
 		deputy.NewBearerTokenRequestAuthoriser(bearer),
 	)
 
-	appId := "arie_test_codeupdate2"
-	codeupdateOptions := codeupdate.CustomAppOptions{
-		Name:             "Arie Test Codeupdate Application",
-		HTMLBase64:       readAndEncode(os.Getenv("EXAMPLE_REPORT_HTML")),
-		JavascriptBase64: readAndEncode(os.Getenv("EXAMPLE_REPORT_JS")),
-		DecafBase64:      readAndEncode(os.Getenv("EXAMPLE_REPORT_DECAF")),
-		CSSBase64:        readAndEncode(os.Getenv("EXAMPLE_REPORT_CSS")),
-	}
-	var codeWasUpdated = false
-	if err := dc.CodeUpdateCustomApp(appId, codeupdateOptions, &codeWasUpdated); err != nil {
+	// Get current user
+	var me = deputy.MeResponse{}
+	if err := dc.Me(&me); err != nil {
 		fmt.Println(err)
+		return
 	}
 
-	fmt.Printf("codeWasUpdated: %t\n", codeWasUpdated)
+	// Find timesheets for current user
+	queryOptions := deputy.NewQueryResourceOptions()
+
+	queryOptions.AddSearch("employeeIsMe", "Employee", "eq", me.EmployeeId, "")
+	queryOptions.AddSearch("dateFrom", "Date", "ge", "2020-04-01T00:00:00+10:00", "")
+	queryOptions.AddSearch("dateTo", "Date", "le", "2020-04-30T00:00:00+10:00", "")
+	queryOptions.AddSort("Date", deputy.SortAscending)
+
+	var timesheets []*deputy.Timesheet
+	if err := dc.QueryResource("Timesheet", queryOptions, &timesheets); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	overtime.DebugOT(timesheets)
 }
