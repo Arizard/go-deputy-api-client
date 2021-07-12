@@ -14,6 +14,7 @@ type V1Client struct {
 	Subdomain string
 	Authorise RequestAuthoriser
 	Client    *http.Client
+	Local     bool
 }
 
 func NewV1Client(subdomain string, authorise RequestAuthoriser) *V1Client {
@@ -24,7 +25,11 @@ func NewV1Client(subdomain string, authorise RequestAuthoriser) *V1Client {
 }
 
 func (dc *V1Client) GetAPIUrl() string {
-	return fmt.Sprintf("https://%s.deputy.com/api/v1", dc.Subdomain)
+	if dc.Local {
+		return fmt.Sprintf("https://%s.dpty.io/api/v1", dc.Subdomain)
+	} else {
+		return fmt.Sprintf("https://%s.deputy.com/api/v1", dc.Subdomain)
+	}
 }
 
 func (dc *V1Client) DoAuthorisedRequest(method string, url string, body io.Reader, deputyApiResponse APIResponse) (err error) {
