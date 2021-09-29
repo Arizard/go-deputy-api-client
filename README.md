@@ -1,5 +1,7 @@
 # Deputy API Client
 
+> **Note:** Would this project be useful to you? I'm currently not working on it, but I'd love to take some time and discuss your use case and your needs. [Create an issue](https://github.com/Arizard/go-deputy-api-client/issues) to start the conversation.
+
 ## Description
 
 A Deputy API client package written in Go. Use this to make API calls to Deputy accounts. This is very much unfinished!
